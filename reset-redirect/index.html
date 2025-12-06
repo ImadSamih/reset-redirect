@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Reset Password</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f3f4f6;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #2563eb;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .button {
+            background: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .loader {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Reset Your Password</h1>
+        <div class="loader"></div>
+        <p id="message">Opening RawPower app...</p>
+        <a href="#" id="manualLink" class="button" style="display: none;">Open App Manually</a>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('userId');
+        const secret = urlParams.get('secret');
+
+        // Create deep link
+        const deepLink = `rawpower://reset-password?userId=${userId}&secret=${secret}`;
+
+        // Try to open the app automatically
+        window.location.href = deepLink;
+
+        // Show manual button after 3 seconds
+        setTimeout(() => {
+            document.getElementById('message').textContent = 'If the app didn\'t open automatically:';
+            const link = document.getElementById('manualLink');
+            link.href = deepLink;
+            link.style.display = 'inline-block';
+        }, 3000);
+    </script>
+</body>
+
+</html>
