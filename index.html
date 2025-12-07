@@ -27,11 +27,6 @@
         .icon {
             font-size: 70px;
             margin-bottom: 20px;
-            animation: bounce 2s infinite;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
         }
         h1 {
             color: #2563eb;
@@ -54,11 +49,7 @@
             display: inline-block;
             font-weight: 700;
             font-size: 18px;
-            transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
-        }
-        .button:active {
-            transform: scale(0.95);
         }
         .note {
             margin-top: 20px;
@@ -73,7 +64,7 @@
         <h1>Reset Your Password</h1>
         <p>Tap the button below to open RawPower and reset your password.</p>
         <a href="#" id="openApp" class="button">Open RawPower App</a>
-        <p class="note">Make sure you have the RawPower app installed on your device.</p>
+        <p class="note">Make sure you have the app installed or are using Expo Go.</p>
     </div>
 
     <script>
@@ -81,19 +72,18 @@
         const userId = urlParams.get('userId');
         const secret = urlParams.get('secret');
         
-        const deepLink = userId && secret 
-            ? 'rawpower://reset-password?userId=' + userId + '&secret=' + secret
-            : 'rawpower://';
+        // For Expo Go during development
+        const expoLink = 'exp://192.168.1.100:8081/--/(auth)/reset-password?userId=' + userId + '&secret=' + secret;
         
-        document.getElementById('openApp').href = deepLink;
+        // For production build
+        const productionLink = 'rawpower://reset-password?userId=' + userId + '&secret=' + secret;
         
-        // Try automatic redirect on Android (works better than iOS)
-        const isAndroid = /android/i.test(navigator.userAgent);
-        if (isAndroid && userId && secret) {
-            setTimeout(function() {
-                window.location.href = deepLink;
-            }, 500);
-        }
+        // Try production link first, fallback to expo
+        document.getElementById('openApp').href = productionLink;
+        
+        // Log for debugging
+        console.log('Production link:', productionLink);
+        console.log('Expo link:', expoLink);
     </script>
 </body>
 </html>
