@@ -26,9 +26,22 @@
             max-width: 400px;
         }
 
+        .icon {
+            width: 80px;
+            height: 80px;
+            background: #eff6ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+
         h1 {
             color: #2563eb;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            font-size: 24px;
         }
 
         p {
@@ -39,8 +52,8 @@
         .button {
             background: #2563eb;
             color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 14px 28px;
+            border-radius: 12px;
             text-decoration: none;
             display: inline-block;
             font-weight: 600;
@@ -50,8 +63,8 @@
             border: 3px solid #f3f4f6;
             border-top: 3px solid #2563eb;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
             margin: 20px auto;
         }
@@ -70,31 +83,33 @@
 
 <body>
     <div class="container">
+        <div class="icon">🔒</div>
         <h1>Reset Your Password</h1>
         <div class="loader"></div>
         <p id="message">Opening RawPower app...</p>
-        <a href="#" id="manualLink" class="button" style="display: none;">Open App Manually</a>
+        <a href="#" id="manualLink" class="button" style="display: none;">Open App</a>
     </div>
 
     <script>
-        // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const userId = urlParams.get('userId');
         const secret = urlParams.get('secret');
 
-        // Create deep link
-        const deepLink = `rawpower://reset-password?userId=${userId}&secret=${secret}`;
+        if (userId && secret) {
+            const deepLink = `rawpower://reset-password?userId=${userId}&secret=${secret}`;
+            window.location.href = deepLink;
 
-        // Try to open the app automatically
-        window.location.href = deepLink;
-
-        // Show manual button after 3 seconds
-        setTimeout(() => {
-            document.getElementById('message').textContent = 'If the app didn\'t open automatically:';
-            const link = document.getElementById('manualLink');
-            link.href = deepLink;
-            link.style.display = 'inline-block';
-        }, 3000);
+            setTimeout(() => {
+                document.querySelector('.loader').style.display = 'none';
+                document.getElementById('message').textContent = 'Tap the button to open the app:';
+                const link = document.getElementById('manualLink');
+                link.href = deepLink;
+                link.style.display = 'inline-block';
+            }, 2000);
+        } else {
+            document.querySelector('.loader').style.display = 'none';
+            document.getElementById('message').textContent = 'Invalid reset link.';
+        }
     </script>
 </body>
 
