@@ -12,68 +12,68 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            background: #f3f4f6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 20px;
         }
         .container {
             background: white;
             padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             text-align: center;
             max-width: 400px;
+            width: 100%;
         }
         .icon {
-            width: 80px;
-            height: 80px;
-            background: #eff6ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 40px;
+            font-size: 70px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
         h1 {
             color: #2563eb;
             margin-bottom: 10px;
-            font-size: 24px;
+            font-size: 28px;
+            font-weight: 700;
         }
         p {
             color: #6b7280;
             margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
         }
         .button {
             background: #2563eb;
             color: white;
-            padding: 14px 28px;
+            padding: 16px 40px;
             border-radius: 12px;
             text-decoration: none;
             display: inline-block;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 18px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
         }
-        .loader {
-            border: 3px solid #f3f4f6;
-            border-top: 3px solid #2563eb;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+        .button:active {
+            transform: scale(0.95);
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .note {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #9ca3af;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="icon">🔒</div>
+        <div class="icon">🔐</div>
         <h1>Reset Your Password</h1>
-        <div class="loader"></div>
-        <p id="message">Opening RawPower app...</p>
-        <a href="#" id="manualLink" class="button" style="display: none;">Open App</a>
+        <p>Tap the button below to open RawPower and reset your password.</p>
+        <a href="#" id="openApp" class="button">Open RawPower App</a>
+        <p class="note">Make sure you have the RawPower app installed on your device.</p>
     </div>
 
     <script>
@@ -81,20 +81,18 @@
         const userId = urlParams.get('userId');
         const secret = urlParams.get('secret');
         
-        if (userId && secret) {
-            const deepLink = `rawpower://reset-password?userId=${userId}&secret=${secret}`;
-            window.location.href = deepLink;
-            
-            setTimeout(() => {
-                document.querySelector('.loader').style.display = 'none';
-                document.getElementById('message').textContent = 'Tap the button to open the app:';
-                const link = document.getElementById('manualLink');
-                link.href = deepLink;
-                link.style.display = 'inline-block';
-            }, 2000);
-        } else {
-            document.querySelector('.loader').style.display = 'none';
-            document.getElementById('message').textContent = 'Invalid reset link.';
+        const deepLink = userId && secret 
+            ? 'rawpower://reset-password?userId=' + userId + '&secret=' + secret
+            : 'rawpower://';
+        
+        document.getElementById('openApp').href = deepLink;
+        
+        // Try automatic redirect on Android (works better than iOS)
+        const isAndroid = /android/i.test(navigator.userAgent);
+        if (isAndroid && userId && secret) {
+            setTimeout(function() {
+                window.location.href = deepLink;
+            }, 500);
         }
     </script>
 </body>
